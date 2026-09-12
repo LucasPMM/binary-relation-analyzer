@@ -156,8 +156,8 @@ static void assert_analysis_equal(RelationAnalysis actual, RelationAnalysis expe
     assert(actual.partial_order == expected.partial_order);
 }
 
-static void assert_relation_equals_matrix(const Relation *relation,
-                                          ReferenceMatrix expected, size_t size) {
+static void assert_relation_equals_matrix(const Relation *relation, ReferenceMatrix expected,
+                                          size_t size) {
     size_t source;
     size_t target;
 

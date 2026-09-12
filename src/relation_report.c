@@ -44,8 +44,7 @@ static void write_reflexivity_details(const Relation *relation, FILE *output) {
     fputs("Missing reflexive pairs: ", output);
     for (index = 0; index < relation_size(relation); index++) {
         if (!relation_contains(relation, index, index)) {
-            fprintf(output, "(%d,%d); ", element_at(relation, index),
-                    element_at(relation, index));
+            fprintf(output, "(%d,%d); ", element_at(relation, index), element_at(relation, index));
         }
     }
     fputc('\n', output);
@@ -57,8 +56,7 @@ static void write_irreflexivity_details(const Relation *relation, FILE *output) 
     fputs("Irreflexive counterexamples: ", output);
     for (index = 0; index < relation_size(relation); index++) {
         if (relation_contains(relation, index, index)) {
-            fprintf(output, "(%d,%d); ", element_at(relation, index),
-                    element_at(relation, index));
+            fprintf(output, "(%d,%d); ", element_at(relation, index), element_at(relation, index));
         }
     }
     fputc('\n', output);

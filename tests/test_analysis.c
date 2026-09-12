@@ -5,8 +5,8 @@
 #include "relation_analysis.h"
 #include "relation_closure.h"
 
-static Relation *create_relation(const int *elements, size_t element_count,
-                                 const int (*pairs)[2], size_t pair_count) {
+static Relation *create_relation(const int *elements, size_t element_count, const int (*pairs)[2],
+                                 size_t pair_count) {
     Relation *relation = relation_create(elements, element_count);
     size_t index;
 

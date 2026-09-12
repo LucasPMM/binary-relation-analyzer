@@ -11,7 +11,7 @@ permissions:
 jobs:
   build-and-test:
     name: Build and test (${{ matrix.compiler }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -32,7 +32,7 @@ jobs:
 
   sanitizers:
     name: Address and undefined behavior sanitizers
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       CC: gcc
@@ -45,3 +45,25 @@ jobs:
 
       - name: Build and run sanitized tests
         run: make sanitize
+
+  quality:
+    name: Formatting, static analysis and coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CC: gcc
+      CLANG_FORMAT: clang-format-18
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check source formatting
+        run: make check-format
+
+      - name: Run GCC static analyzer
+        run: make analyze
+
+      - name: Run tests with coverage instrumentation
+        run: make coverage
