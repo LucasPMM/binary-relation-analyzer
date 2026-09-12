@@ -1,5 +1,5 @@
 #include "application.h"
 
-int main(void) {
-    return run_application();
+int main(int argc, char *argv[]) {
+    return run_application(argc, argv);
 }

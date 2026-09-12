@@ -9,6 +9,7 @@
 #include "relation_io.h"
 
 #define INPUT_BUFFER_SIZE 4096
+/* The file format is deliberately bounded even though the model is not. */
 #define MAX_INPUT_ELEMENTS 50
 
 static bool parse_next_integer(const char **cursor, int *value) {

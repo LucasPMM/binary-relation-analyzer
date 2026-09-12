@@ -17,6 +17,22 @@ static Relation *create_relation(const int *elements, size_t element_count,
     return relation;
 }
 
+static void test_null_inputs(void) {
+    RelationAnalysis analysis = relation_analyze(NULL);
+
+    assert(!analysis.reflexive);
+    assert(!analysis.irreflexive);
+    assert(!analysis.symmetric);
+    assert(!analysis.antisymmetric);
+    assert(!analysis.asymmetric);
+    assert(!analysis.transitive);
+    assert(!analysis.equivalence);
+    assert(!analysis.partial_order);
+    assert(relation_reflexive_closure(NULL) == NULL);
+    assert(relation_symmetric_closure(NULL) == NULL);
+    assert(relation_transitive_closure(NULL) == NULL);
+}
+
 static void test_empty_set_properties(void) {
     Relation *relation = relation_create(NULL, 0);
     RelationAnalysis analysis;
@@ -32,6 +48,36 @@ static void test_empty_set_properties(void) {
     assert(analysis.equivalence);
     assert(analysis.partial_order);
     relation_destroy(relation);
+}
+
+static void test_singleton_properties(void) {
+    const int elements[] = {7};
+    Relation *without_loop = create_relation(elements, 1, NULL, 0);
+    Relation *with_loop = create_relation(elements, 1, NULL, 0);
+    RelationAnalysis analysis = relation_analyze(without_loop);
+
+    assert(!analysis.reflexive);
+    assert(analysis.irreflexive);
+    assert(analysis.symmetric);
+    assert(analysis.antisymmetric);
+    assert(analysis.asymmetric);
+    assert(analysis.transitive);
+    assert(!analysis.equivalence);
+    assert(!analysis.partial_order);
+
+    assert(relation_add_pair(with_loop, 7, 7));
+    analysis = relation_analyze(with_loop);
+    assert(analysis.reflexive);
+    assert(!analysis.irreflexive);
+    assert(analysis.symmetric);
+    assert(analysis.antisymmetric);
+    assert(!analysis.asymmetric);
+    assert(analysis.transitive);
+    assert(analysis.equivalence);
+    assert(analysis.partial_order);
+
+    relation_destroy(without_loop);
+    relation_destroy(with_loop);
 }
 
 static void test_equivalence_properties(void) {
@@ -123,7 +169,9 @@ static void test_closures_are_independent_and_minimal(void) {
 }
 
 int main(void) {
+    test_null_inputs();
     test_empty_set_properties();
+    test_singleton_properties();
     test_equivalence_properties();
     test_partial_order_properties();
     test_asymmetric_and_non_transitive_properties();

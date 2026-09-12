@@ -16,6 +16,12 @@ typedef struct {
     bool partial_order;
 } RelationAnalysis;
 
+/**
+ * Computes every supported property without modifying the relation.
+ *
+ * Properties over an empty set follow vacuous-truth semantics. Passing NULL
+ * returns an all-false result to make invalid use distinguishable from empty.
+ */
 RelationAnalysis relation_analyze(const Relation *relation);
 
 #endif

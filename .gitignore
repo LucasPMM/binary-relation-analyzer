@@ -1,9 +1,13 @@
-/a.out
-/a.out-sanitize
+/binary-relation-analyzer
+/binary-relation-analyzer-sanitize
 /relation-tests
 /relation-tests-sanitize
 /analysis-tests
 /analysis-tests-sanitize
+/exhaustive-tests
+/exhaustive-tests-sanitize
+/io-report-tests
+/io-report-tests-sanitize
 *.o
 *.gcda
 *.gcno

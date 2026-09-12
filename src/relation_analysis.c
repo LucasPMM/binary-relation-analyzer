@@ -35,6 +35,7 @@ RelationAnalysis relation_analyze(const Relation *relation) {
         return analysis;
     }
 
+    /* Every universal property starts true, including for the empty set. */
     analysis.reflexive = true;
     analysis.irreflexive = true;
     analysis.symmetric = true;

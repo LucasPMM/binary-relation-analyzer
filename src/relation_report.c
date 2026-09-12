@@ -132,6 +132,7 @@ static void write_closure(const char *name, const Relation *relation, const Rela
     size_t target;
 
     fprintf(output, "%s closure = {", name);
+    /* Preserve input pairs first, then append only pairs introduced by the closure. */
     for (source = 0; source < relation_size(relation); source++) {
         for (target = 0; target < relation_size(relation); target++) {
             if (relation_contains(relation, source, target)) {

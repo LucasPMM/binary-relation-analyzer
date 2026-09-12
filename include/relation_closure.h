@@ -3,8 +3,13 @@
 
 #include "relation.h"
 
+/** Returns a new minimal reflexive superset of relation. */
 Relation *relation_reflexive_closure(const Relation *relation);
+
+/** Returns a new minimal symmetric superset of relation. */
 Relation *relation_symmetric_closure(const Relation *relation);
+
+/** Returns a new minimal transitive superset of relation. */
 Relation *relation_transitive_closure(const Relation *relation);
 
 #endif

@@ -6,6 +6,7 @@
 
 struct Relation {
     int *elements;
+    /* Ordered-pair membership is stored as a row-major square matrix. */
     bool *pairs;
     size_t element_count;
     size_t pair_count;
@@ -14,6 +15,7 @@ struct Relation {
 static bool allocation_sizes_are_valid(size_t element_count) {
     size_t pair_capacity;
 
+    /* Validate both multiplications before allocating attacker-controlled sizes. */
     if (element_count > SIZE_MAX / sizeof(int)) {
         return false;
     }
@@ -56,6 +58,7 @@ Relation *relation_create(const int *elements, size_t element_count) {
     }
 
     if (element_count > 0) {
+        /* Relation owns its labels so callers may release their input array. */
         relation->elements = malloc(element_count * sizeof(*relation->elements));
         relation->pairs = calloc(element_count * element_count, sizeof(*relation->pairs));
         if (relation->elements == NULL || relation->pairs == NULL) {

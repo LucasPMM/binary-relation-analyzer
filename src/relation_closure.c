@@ -47,6 +47,7 @@ Relation *relation_transitive_closure(const Relation *relation) {
         return NULL;
     }
 
+    /* Warshall's algorithm progressively admits each intermediate element. */
     for (intermediate = 0; intermediate < size; intermediate++) {
         for (source = 0; source < size; source++) {
             if (!relation_contains(closure, source, intermediate)) {

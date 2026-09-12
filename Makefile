@@ -8,16 +8,21 @@ STANDARD_FLAGS := -std=c17
 WARNING_FLAGS := -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror
 SANITIZER_FLAGS := -g -O1 -fno-omit-frame-pointer -fsanitize=address,undefined
 
-TARGET := a.out
-SANITIZER_TARGET := a.out-sanitize
+TARGET := binary-relation-analyzer
+SANITIZER_TARGET := binary-relation-analyzer-sanitize
 RELATION_TEST_TARGET := relation-tests
 SANITIZER_RELATION_TEST_TARGET := relation-tests-sanitize
 ANALYSIS_TEST_TARGET := analysis-tests
 SANITIZER_ANALYSIS_TEST_TARGET := analysis-tests-sanitize
+EXHAUSTIVE_TEST_TARGET := exhaustive-tests
+SANITIZER_EXHAUSTIVE_TEST_TARGET := exhaustive-tests-sanitize
+IO_REPORT_TEST_TARGET := io-report-tests
+SANITIZER_IO_REPORT_TEST_TARGET := io-report-tests-sanitize
 APP_SOURCES := src/main.c src/application.c src/relation.c src/relation_analysis.c \
 	src/relation_closure.c src/relation_io.c src/relation_report.c
 RELATION_SOURCE := src/relation.c
 ANALYSIS_SOURCES := src/relation.c src/relation_analysis.c src/relation_closure.c
+IO_REPORT_SOURCES := $(ANALYSIS_SOURCES) src/relation_io.c src/relation_report.c
 HEADERS := $(wildcard include/*.h)
 
 .PHONY: all test sanitize clean
@@ -43,17 +48,38 @@ $(ANALYSIS_TEST_TARGET): tests/test_analysis.c $(ANALYSIS_SOURCES) $(HEADERS)
 $(SANITIZER_ANALYSIS_TEST_TARGET): tests/test_analysis.c $(ANALYSIS_SOURCES) $(HEADERS)
 	$(CC) $(CPPFLAGS) -Iinclude $(STANDARD_FLAGS) $(WARNING_FLAGS) $(SANITIZER_FLAGS) tests/test_analysis.c $(ANALYSIS_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
 
-test: $(TARGET) $(RELATION_TEST_TARGET) $(ANALYSIS_TEST_TARGET)
+$(EXHAUSTIVE_TEST_TARGET): tests/test_exhaustive.c $(ANALYSIS_SOURCES) $(HEADERS)
+	$(CC) $(CPPFLAGS) -Iinclude $(STANDARD_FLAGS) $(WARNING_FLAGS) $(CFLAGS) tests/test_exhaustive.c $(ANALYSIS_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(SANITIZER_EXHAUSTIVE_TEST_TARGET): tests/test_exhaustive.c $(ANALYSIS_SOURCES) $(HEADERS)
+	$(CC) $(CPPFLAGS) -Iinclude $(STANDARD_FLAGS) $(WARNING_FLAGS) $(SANITIZER_FLAGS) tests/test_exhaustive.c $(ANALYSIS_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(IO_REPORT_TEST_TARGET): tests/test_io_report.c $(IO_REPORT_SOURCES) $(HEADERS)
+	$(CC) $(CPPFLAGS) -Iinclude $(STANDARD_FLAGS) $(WARNING_FLAGS) $(CFLAGS) tests/test_io_report.c $(IO_REPORT_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(SANITIZER_IO_REPORT_TEST_TARGET): tests/test_io_report.c $(IO_REPORT_SOURCES) $(HEADERS)
+	$(CC) $(CPPFLAGS) -Iinclude $(STANDARD_FLAGS) $(WARNING_FLAGS) $(SANITIZER_FLAGS) tests/test_io_report.c $(IO_REPORT_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+test: $(TARGET) $(RELATION_TEST_TARGET) $(ANALYSIS_TEST_TARGET) $(EXHAUSTIVE_TEST_TARGET) \
+	$(IO_REPORT_TEST_TARGET)
 	./$(RELATION_TEST_TARGET)
 	./$(ANALYSIS_TEST_TARGET)
+	./$(EXHAUSTIVE_TEST_TARGET)
+	./$(IO_REPORT_TEST_TARGET)
 	./tests/run_tests.sh ./$(TARGET)
 
-sanitize: $(SANITIZER_TARGET) $(SANITIZER_RELATION_TEST_TARGET) $(SANITIZER_ANALYSIS_TEST_TARGET)
+sanitize: $(SANITIZER_TARGET) $(SANITIZER_RELATION_TEST_TARGET) \
+	$(SANITIZER_ANALYSIS_TEST_TARGET) $(SANITIZER_EXHAUSTIVE_TEST_TARGET) \
+	$(SANITIZER_IO_REPORT_TEST_TARGET)
 	ASAN_OPTIONS=detect_leaks=$${ASAN_DETECT_LEAKS:-0} ./$(SANITIZER_RELATION_TEST_TARGET)
 	ASAN_OPTIONS=detect_leaks=$${ASAN_DETECT_LEAKS:-0} ./$(SANITIZER_ANALYSIS_TEST_TARGET)
+	ASAN_OPTIONS=detect_leaks=$${ASAN_DETECT_LEAKS:-0} ./$(SANITIZER_EXHAUSTIVE_TEST_TARGET)
+	ASAN_OPTIONS=detect_leaks=$${ASAN_DETECT_LEAKS:-0} ./$(SANITIZER_IO_REPORT_TEST_TARGET)
 	ASAN_OPTIONS=detect_leaks=$${ASAN_DETECT_LEAKS:-0} ./tests/run_tests.sh ./$(SANITIZER_TARGET)
 
 clean:
 	rm -f $(TARGET) $(SANITIZER_TARGET) $(RELATION_TEST_TARGET) \
 		$(SANITIZER_RELATION_TEST_TARGET) $(ANALYSIS_TEST_TARGET) \
-		$(SANITIZER_ANALYSIS_TEST_TARGET)
+		$(SANITIZER_ANALYSIS_TEST_TARGET) $(EXHAUSTIVE_TEST_TARGET) \
+		$(SANITIZER_EXHAUSTIVE_TEST_TARGET) $(IO_REPORT_TEST_TARGET) \
+		$(SANITIZER_IO_REPORT_TEST_TARGET)
