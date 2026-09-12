@@ -82,84 +82,84 @@ run_failure() {
 }
 
 run_success legacy_sample \
-    '1. Reflexiva: V' \
-    '3. Simetrica: V' \
-    '4. Anti-simetrica: F' \
-    '6. Transitiva: V' \
-    'Relaçao de equivalencia: V' \
-    'Relaçao de ordem parcial: F'
+    '1. Reflexive: true' \
+    '3. Symmetric: true' \
+    '4. Antisymmetric: false' \
+    '6. Transitive: true' \
+    'Equivalence relation: true' \
+    'Partial order: false'
 
 run_success empty_set \
-    '1. Reflexiva: V' \
-    '2. Irreflexiva: V' \
-    '3. Simetrica: V' \
-    '4. Anti-simetrica: V' \
-    '5. Asimetrica: V' \
-    '6. Transitiva: V' \
-    'Relaçao de equivalencia: V' \
-    'Relaçao de ordem parcial: V' \
-    'Fecho reflexivo da relaçao = {}' \
-    'Fecho simetrico da relaçao = {}' \
-    'Fecho transitivo da relaçao = {}'
+    '1. Reflexive: true' \
+    '2. Irreflexive: true' \
+    '3. Symmetric: true' \
+    '4. Antisymmetric: true' \
+    '5. Asymmetric: true' \
+    '6. Transitive: true' \
+    'Equivalence relation: true' \
+    'Partial order: true' \
+    'Reflexive closure = {}' \
+    'Symmetric closure = {}' \
+    'Transitive closure = {}'
 
 run_success empty_relation \
-    '1. Reflexiva: F' \
-    '2. Irreflexiva: V' \
-    '3. Simetrica: V' \
-    '4. Anti-simetrica: V' \
-    '5. Asimetrica: V' \
-    '6. Transitiva: V' \
-    'Relaçao de equivalencia: F' \
-    'Relaçao de ordem parcial: F' \
-    'Fecho reflexivo da relaçao = {(1,1),(2,2)}'
+    '1. Reflexive: false' \
+    '2. Irreflexive: true' \
+    '3. Symmetric: true' \
+    '4. Antisymmetric: true' \
+    '5. Asymmetric: true' \
+    '6. Transitive: true' \
+    'Equivalence relation: false' \
+    'Partial order: false' \
+    'Reflexive closure = {(1,1),(2,2)}'
 
 run_success equivalence_multi_digit \
-    '1. Reflexiva: V' \
-    '2. Irreflexiva: F' \
-    '3. Simetrica: V' \
-    '4. Anti-simetrica: F' \
-    '5. Asimetrica: F' \
-    '6. Transitiva: V' \
-    'Relaçao de equivalencia: V' \
-    'Relaçao de ordem parcial: F'
+    '1. Reflexive: true' \
+    '2. Irreflexive: false' \
+    '3. Symmetric: true' \
+    '4. Antisymmetric: false' \
+    '5. Asymmetric: false' \
+    '6. Transitive: true' \
+    'Equivalence relation: true' \
+    'Partial order: false'
 
 run_success partial_order \
-    '1. Reflexiva: V' \
-    '3. Simetrica: F' \
-    '4. Anti-simetrica: V' \
-    '6. Transitiva: V' \
-    'Relaçao de equivalencia: F' \
-    'Relaçao de ordem parcial: V'
+    '1. Reflexive: true' \
+    '3. Symmetric: false' \
+    '4. Antisymmetric: true' \
+    '6. Transitive: true' \
+    'Equivalence relation: false' \
+    'Partial order: true'
 
 run_success asymmetric_transitive \
-    '1. Reflexiva: F' \
-    '2. Irreflexiva: V' \
-    '3. Simetrica: F' \
-    '4. Anti-simetrica: V' \
-    '5. Asimetrica: V' \
-    '6. Transitiva: V'
+    '1. Reflexive: false' \
+    '2. Irreflexive: true' \
+    '3. Symmetric: false' \
+    '4. Antisymmetric: true' \
+    '5. Asymmetric: true' \
+    '6. Transitive: true'
 
 run_success symmetric_non_transitive \
-    '2. Irreflexiva: V' \
-    '3. Simetrica: V' \
-    '4. Anti-simetrica: F' \
-    '5. Asimetrica: F' \
-    '6. Transitiva: F'
+    '2. Irreflexive: true' \
+    '3. Symmetric: true' \
+    '4. Antisymmetric: false' \
+    '5. Asymmetric: false' \
+    '6. Transitive: false'
 
 run_success non_transitive_closure \
-    '6. Transitiva: F' \
+    '6. Transitive: false' \
     '(1,3);' \
-    'Fecho transitivo da relaçao = {(1,2),(2,3),(1,3)}'
+    'Transitive closure = {(1,2),(2,3),(1,3)}'
 
 run_success duplicate_pair \
-    'Fecho simetrico da relaçao = {(10,20),(20,10)}'
+    'Symmetric closure = {(10,20),(20,10)}'
 
-run_failure malformed_header 'quantidade de elementos incorreta'
-run_failure duplicate_element 'elementos duplicados'
-run_failure unknown_element 'elemento desconhecido'
-run_failure malformed_pair 'par ordenado invalido'
-run_failure invalid_count 'numero de elementos invalido'
-run_failure missing_file 'nao foi possivel abrir o arquivo input.txt'
+run_failure malformed_header 'wrong number of elements'
+run_failure duplicate_element 'duplicate elements'
+run_failure unknown_element 'unknown element'
+run_failure malformed_pair 'invalid ordered pair'
+run_failure invalid_count 'invalid element count'
+run_failure missing_file 'could not open input file input.txt'
 
 printf '\n%d passed, %d failed\n' "${passed}" "${failed}"
 ((failed == 0))

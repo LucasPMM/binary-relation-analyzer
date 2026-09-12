@@ -2,6 +2,8 @@
 /a.out-sanitize
 /relation-tests
 /relation-tests-sanitize
+/analysis-tests
+/analysis-tests-sanitize
 *.o
 *.gcda
 *.gcno
