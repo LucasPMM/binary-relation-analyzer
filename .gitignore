@@ -1,0 +1,6 @@
+/binary-relation-analyzer
+/build/
+*.o
+*.gcda
+*.gcno
+*.gcov
