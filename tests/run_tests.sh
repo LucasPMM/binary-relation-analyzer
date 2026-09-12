@@ -159,7 +159,7 @@ run_failure duplicate_element 'elementos duplicados'
 run_failure unknown_element 'elemento desconhecido'
 run_failure malformed_pair 'par ordenado invalido'
 run_failure invalid_count 'numero de elementos invalido'
-run_failure missing_file 'nao foi possivel abrir o arquivo dados.txt'
+run_failure missing_file 'nao foi possivel abrir o arquivo input.txt'
 
 printf '\n%d passed, %d failed\n' "${passed}" "${failed}"
 ((failed == 0))

@@ -1,1 +1,1 @@
-This directory intentionally contains no `dados.txt` file.
+This directory intentionally contains no `input.txt` file.

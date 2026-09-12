@@ -1,0 +1,6 @@
+#ifndef BINARY_RELATION_ANALYZER_APPLICATION_H
+#define BINARY_RELATION_ANALYZER_APPLICATION_H
+
+int run_application(void);
+
+#endif
