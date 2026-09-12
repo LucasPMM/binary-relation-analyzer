@@ -1,90 +1,166 @@
-/*
-Trabalho desenvolvido por Lucas Paulo Martins Mariz - Técnico em informática formado pelo Coltec/UFMG e aluno de Ciência da Computação UFMG
-*/
-# Relações Binárias
-### Considerações Iniciais: 
-O projeto foi inteiramente desenvolvido em um ambiente linux, sendo assim, o melhor sistema para sua execução sem grandes problemas é o Linux (preferencialmente Ubuntu).
-Para a execução é necessário instalar alguns pacotes relacionados ao makefile, caso já não estejam instalados.
-	
-	$ sudo apt-get update
-	$ sudo apt-get upgrade
-	$ sudo apt-get install make
+# Binary Relation Analyzer
 
-Após a instalação, basta digitar ir para o diretorio do trabalho utilizando o comando "cd" e digitar o comando "make" no terminal, o qual irá compilar o main e a biblioteca:
+Binary Relation Analyzer is a dependency-free C17 command-line application for inspecting finite
+binary relations. It reads a set and its ordered pairs from a text file, displays the corresponding
+matrix, evaluates common relation properties, and computes reflexive, symmetric, and transitive
+closures.
 
-	$ make
+## Features
 
-A biblioteca será automaticamente compilada e o programa irá gerar um arquivo executável "a.out", que deverá ser executado seguindo da seguinte forma:
-	
-	$ ./a.out
+- Evaluates reflexivity, irreflexivity, symmetry, antisymmetry, asymmetry, and transitivity.
+- Identifies equivalence relations and partial orders.
+- Reports counterexamples for reflexivity, irreflexivity, symmetry, antisymmetry, and transitivity.
+- Computes minimal reflexive, symmetric, and transitive supersets.
+- Accepts signed integer labels and ignores repeated ordered pairs.
+- Handles invalid input with line-specific diagnostics and a nonzero exit status.
+- Includes focused unit tests, CLI integration tests, and exhaustive verification of every relation
+  over sets containing up to three elements.
 
-A execução do projeto é independente e não necessita da interferência do usuário pois todos os dados são resgatados do arquivo "dados.txt".
+## Requirements
 
-Para modificar as informações do programa basta alterar o arquivo "dados.txt". Ele está formatado da seguinte forma:
+To build and run the application, you need:
 
-|  Linha           | Digito            | Propriedade                                 |
-| ---------------- |:----------------  |:-------------------------------------------:|
-| 1°               | 1° Digito         | número de elementos do grafo                |
-| 1°               | Digitos Seguintes | nome de cada elemento                       |
-|Linhas Seguintes  | Digitos Seguintes | relacionamentos entre os elementos do grafo |
+- a C17 compiler such as GCC or Clang;
+- GNU Make;
+- a POSIX-compatible shell for the integration tests.
 
-- Arquivos:
+Optional development commands also use GCC, gcov, and clang-format.
 
-| Arquivo       | Função        								| 
-| ------------- |:-----------------------------------------------------------------------------:|
-| main.c        | main do trabalho                                                              |
-| grafo.c       | biblioteca com todas as funções para determinar as propriedades dos grafos    |
-| grafo.h       | linkagem das bibliotecas                                                      |
-| makefile      | arquivo make para compilar o main.c e o grafo.c                               |
-| dados.txt     | arquivo com a entrada do trabalho (numero de elementos, elementos, relações) 	|
-| rb.pfd        | documentação do trabalho						        |
+## Build and run
 
-# Documentação: 
-### Descrição Geral:
-O desenvolvimento de uma estrutura na linguagem C na qual as relações seriam armazenadas em um grafo se torna uma tarefa um tanto quanto complexa dado o fato de ser necessário o uso de ponteiros de ponteiros, arquivos, vetores diâmicos, entre outros. Sendo assim, todo o processo foi minuciosamente esquematizado para evitar que erros de lógica pudessem vir a surgir.
-### Arquivo grafo.c e suas funções:
-Com o intuito de deixar o trabalho mais organizado, todas as funções designadas a determinar propriedades das relações foram feitas em um arquivo separado. Tal arquivo pode ser chamado como uma biblioteca, a qual é incluída através de seu respectivo arquivo ".h".
-A estrutura principal do grafo consiste em alguns elementos e propriedades devidamente expliciadas. As propriedades podem assumir os valores 1 ou 0, dependendo da sua ocorrência ou não. Por padrão lógico, todas as propriedades são consideradas verdadeiras até que se prove ao contrário.
-```c
-struct grafo {
-	int **matriz_adjacencia;	// Matriz de adjacencias que representa o grafo
-	int n_vertices;			// Número total de vertices que o grafo terá
-	int elementos[50];      	// Nomes dos vértices fornecidos pelo usuário
-	int n_ligacoes;			// Número total de ligações que o grafo fará
+Build the release executable:
 
-    // Propriedades: 1 -> V | 0 -> F
-    int propriedade_reflexiva;
-    int propriedade_irreflexiva;
-    int propriedade_simetrica;
-    int propriedade_anti_simetrica;
-    int propriedade_assimetrica;
-    int propriedade_transitiva;
-
-    int relacao_equivalencia;
-    int relacao_ordem_parcial;
-};
+```console
+$ make
 ```
-A Biblioteca é constituída pelas seguintes funções:
-```c
-	Grafo* cria_grafo(int *excessao_zero);			// Alocação dinâmica da matriz de adjacências
-	Grafo* preenche_grafo(int *excessao_zero);		// Preenchimento da matriz com os dados do arquivo
-	void insere_aresta(Grafo *gr, int orig, int dest);	// Tratamento da informação para a inserção
-	void imprime_matriz(Grafo *gr);				// Impressão da matriz de adjacências
-	void inicializar();					// Função chamada pelo main.c; inicia toda a execução
-	void propriedades(Grafo *gr);				// Central de definição das propriedades do grafo
-	void libera_matriz(int **m, int tam);			// Liberação do espaço alocado
-	int** aloca_matriz(int tam);				// Aloca matriz inteira quadrada
-	void reflexiva(Grafo *gr);				// Determina se a relação e reflexiva ou não
-	void irreflexiva(Grafo *gr);				// Determina se a relação é irreflexiva ou não
-	void simetrica(Grafo *gr);				// Determina se a relação é simétrica ou não
-	void anti_simetrica(Grafo *gr);				// Determina se a relação é anti-simétrica ou não
-	void assimetrica(Grafo *gr);				// Determina se a relação é assimétrica ou não
-	void transitiva(Grafo *gr);				// Determina se a relação é transitiva ou não
-	void equivalencia(Grafo *gr);				// Determina se a relação é de equivalência
-	void ordem_parcial(Grafo *gr);				// Determina se a relação é de ordem parcial
-	void fecho_reflexivo(Grafo *gr);			// Determina o fecho reflexivo da relação
-	void fecho_simetrico(Grafo *gr);			// Determina o fecho simétrico da relação
-	void fecho_transitivo(Grafo *gr);			// Determina o fecho transitivo da relação
-	void fecho_padrao(Grafo *gr);				// Determina o fecho padrão da relação
+
+Analyze the bundled example:
+
+```console
+$ ./binary-relation-analyzer examples/sample.txt
 ```
-A variavel "excessao_zero" entra em ação quando inserimos um grafo com zero vértices, fazendo todas as propriedades serem verdadeiras por default.
+
+The report contains the relation matrix, the result of each property check, relevant
+counterexamples, and all supported closures.
+
+Display the command-line help with:
+
+```console
+$ ./binary-relation-analyzer --help
+```
+
+Use `--` before a filename that begins with a dash:
+
+```console
+$ ./binary-relation-analyzer -- -relation.txt
+```
+
+## Input format
+
+The first line declares the number of elements followed by exactly that many unique integer
+labels. Each subsequent non-empty line contains one ordered pair:
+
+```text
+3 10 20 30
+10 20
+20 30
+```
+
+This input represents the set `{10, 20, 30}` and the relation `{(10, 20), (20, 30)}`.
+
+Input rules:
+
+- A set may contain from 0 to 50 elements.
+- Labels must be unique signed integers representable by the platform's C `int` type.
+- Whitespace separates values, and blank lines after the header are ignored.
+- Every ordered-pair member must belong to the declared set.
+- Each pair must occupy its own line and contain exactly two labels.
+- Repeated pairs are accepted but do not change the relation.
+- Missing, extra, malformed, unknown, or duplicate element values invalidate the entire input.
+
+An empty relation over an empty set can be written as:
+
+```text
+0
+```
+
+## Properties
+
+For a relation `R` over a finite set `A`, the analyzer uses the following definitions:
+
+| Property | Condition |
+| --- | --- |
+| Reflexive | For every `a` in `A`, `(a, a)` belongs to `R`. |
+| Irreflexive | For every `a` in `A`, `(a, a)` does not belong to `R`. |
+| Symmetric | If `(a, b)` belongs to `R`, then `(b, a)` belongs to `R`. |
+| Antisymmetric | If `(a, b)` and `(b, a)` belong to `R`, then `a = b`. |
+| Asymmetric | If `(a, b)` belongs to `R`, then `(b, a)` does not belong to `R`. |
+| Transitive | If `(a, b)` and `(b, c)` belong to `R`, then `(a, c)` belongs to `R`. |
+| Equivalence relation | `R` is reflexive, symmetric, and transitive. |
+| Partial order | `R` is reflexive, antisymmetric, and transitive. |
+
+Properties of the empty set follow vacuous-truth semantics. Its empty relation therefore satisfies
+all six base properties and is both an equivalence relation and a partial order.
+
+Each closure is a new relation containing every original pair plus the minimum pairs required to
+satisfy the corresponding property. The transitive closure is computed with Warshall's algorithm.
+
+## Development commands
+
+| Command | Purpose |
+| --- | --- |
+| `make test` | Build and run unit, exhaustive, integration, parser, and CLI tests. |
+| `make sanitize` | Run the complete suite with AddressSanitizer and UBSan. |
+| `make coverage` | Run instrumented tests and print gcov line, branch, and function coverage. |
+| `make analyze` | Compile all application modules with the GCC static analyzer. |
+| `make format` | Format all C sources and public headers with clang-format. |
+| `make check-format` | Fail if any C source or public header is not correctly formatted. |
+| `make clean` | Remove the executable and all generated build artifacts. |
+
+LeakSanitizer is disabled by default because it is not supported in some traced or sandboxed
+environments. Enable it on a compatible host with:
+
+```console
+$ ASAN_DETECT_LEAKS=1 make sanitize
+```
+
+Override the release compiler when needed:
+
+```console
+$ make clean
+$ make CC=clang test
+```
+
+Generated objects, dependency files, test executables, and instrumented binaries are isolated under
+`build/`. The release executable remains at the repository root.
+
+## Project structure
+
+```text
+.
+├── examples/                 Sample input files
+├── include/                  Public module interfaces
+├── src/
+│   ├── main.c                Process entry point
+│   ├── application.c         Command-line parsing and application lifecycle
+│   ├── relation.c            Relation domain model and pair storage
+│   ├── relation_analysis.c   Pure property evaluation
+│   ├── relation_closure.c    Closure algorithms
+│   ├── relation_io.c         Text input parsing and validation
+│   └── relation_report.c     Deterministic report formatting
+└── tests/                    Unit, exhaustive, fixture, and integration tests
+```
+
+The `Relation` type is opaque. Analysis functions do not modify it, and each closure function
+returns an independently owned relation. This separation keeps parsing, domain logic, algorithms,
+and presentation testable without invoking the full application.
+
+## Continuous integration
+
+GitHub Actions builds and tests the project with GCC and Clang on every push and pull request. A
+separate sanitizer job checks memory and undefined behavior, while the quality job verifies source
+formatting, runs GCC static analysis, and collects coverage.
+
+## Author
+
+Created by Lucas Paulo Martins Mariz.
